@@ -1,8 +1,8 @@
 #----------------------------------
-# ²MÅÜ¼Æ¸ê®Æ,«ü©w¸ê®Æ§¨¦ì¸m
+# æ¸…è®Šæ•¸è³‡æ–™,æŒ‡å®šè³‡æ–™å¤¾ä½ç½®
 #----------------------------------
 rm(list=ls())
-dir<-setwd("D:/Dana/4. Analysis/10. ¶i©±¬d¦X¬ù part 2/data")
+dir<-setwd("D:/Dana/4. Analysis/10. é€²åº—æŸ¥åˆç´„ part 2/data")
 
 library(data.table)
 library(dplyr)
@@ -10,10 +10,10 @@ library(reshape2)
 
 
 #----------------------------------
-# ¶×¤J¸ê®Æ
+# åŒ¯å…¥è³‡æ–™
 #----------------------------------
 
-#¶×¤J¨C¤ë¶i©±¸ê®Æ
+#åŒ¯å…¥æ¯æœˆé€²åº—è³‡æ–™
 
 dir_files<-dir(path = dir)
 All=data.frame()
@@ -28,35 +28,35 @@ for( i in (1:length(dir_files))){
 }
 
 #----------------------------------
-# ·s¼WÄæ¦ì
+# æ–°å¢æ¬„ä½
 #----------------------------------
 
 
-#°µF©MRÄæ¦ì
+#åšFå’ŒRæ¬„ä½
 category <- function(x) if(nchar(x) == 7) "F" else if (nchar(x) == 4) "R" else "Error"
 All$group <- sapply(All$Store_No,category)
 
-#«ö«È¤áID¤Î¶i©±®É¶¡±Æ¦C??
+#æŒ‰å®¢æˆ¶IDåŠé€²åº—æ™‚é–“æ’åˆ—??
 All_sorted <- arrange(All, Subscriber_No, Date, Time)
 
-# ­pºâ«È¤á¶i©±¦¸¼Æ
+# è¨ˆç®—å®¢æˆ¶é€²åº—æ¬¡æ•¸
 library(dplyr)
 count <- All_sorted  %>% group_by(Subscriber_No) %>% summarise(count = n())
 All_merge <-merge(All_sorted,count, by = c("Subscriber_No"), all.x = TRUE, all.y = FALSE)
 
-# ¬O§_¦³¶iF©ÎR (·s¼W¤GÄæ¦ì))
+# æ˜¯å¦æœ‰é€²Fæˆ–R (æ–°å¢äºŒæ¬„ä½))
 FR <-dcast(All_merge,formula=Subscriber_No~group, value.var="count")
 All_merge2 <-merge(All_merge,FR, by = c("Subscriber_No"), all.x = TRUE, all.y = FALSE)
 
-# ¬O§_¦³¶iF¥BR (·s¼W¤@Äæ¦ì)
+# æ˜¯å¦æœ‰é€²Fä¸”R (æ–°å¢ä¸€æ¬„ä½)
 All_merge2 <-
   All_merge2 %>% 
   mutate(F_and_R = All_merge2$F*All_merge2$R )
 
-#¶×¤JNP churn¤é´Á©M¦X¬ù¨ì´Á¤ë¼Æ?„åˆ°??Ÿæ?ˆæ•¸
+#åŒ¯å…¥NP churnæ—¥æœŸå’Œåˆç´„åˆ°æœŸæœˆæ•¸?ï„’ï‘??î¸‚?ï‡î²
 # install.packages("RODBC")
 library("RODBC")
-ch <- odbcConnect(dsn="10.68.64.138",uid="u_danahuang1",pwd="DJana8501421")
+ch <- odbcConnect(dsn="10.68.64.138",uid="u_danXXXXXX",pwd="DJanXXXXXX")
 NP_churn<-sqlQuery(ch, paste("select mining_dw_subscr_no, inactv_date, PROM_CURR_EXP_MONTH_CNT, data_month
                              from mds_mart.mds_active_mly
                              where churn_ind='Y' and churn_type='MNP' and
@@ -66,21 +66,21 @@ NP_churn<-sqlQuery(ch, paste("select mining_dw_subscr_no, inactv_date, PROM_CURR
 NP_churn$PROM_CURR_EXP_MONTH_CNT = as.numeric(NP_churn$PROM_CURR_EXP_MONTH_CNT)
 All_merge3 <-merge(All_merge2,NP_churn, by = c("MINING_DW_SUBSCR_NO"), all.x = TRUE, all.y = FALSE)
 
-#©M¤U¤@µ§ªº¤Ñ¼Æ®t (·s¼W¤@Äæ¦ì)
+#å’Œä¸‹ä¸€ç­†çš„å¤©æ•¸å·® (æ–°å¢ä¸€æ¬„ä½)
 All_merge3<-All_merge3 %>% 
   tbl_df() %>% 
   mutate(lead_date = lead(Date),
          diff_day = as.Date(lead_date) - as.Date(Date))
 
-#¸Óµ§¶i©±¤é©Mchurn¤é´Áªº¤Ñ¼Æ®t (·s¼W¤@Äæ¦ì)
+#è©²ç­†é€²åº—æ—¥å’Œchurnæ—¥æœŸçš„å¤©æ•¸å·® (æ–°å¢ä¸€æ¬„ä½)
 All_merge3$churn_diff_day<-as.Date(All_merge3$INACTV_DATE) - as.Date(All_merge3$Date)
 
-#¬O§_¦³churn (·s¼W¤@Äæ¦ì)
+#æ˜¯å¦æœ‰churn (æ–°å¢ä¸€æ¬„ä½)
 All_merge3 <-
   All_merge3 %>% 
   mutate(churn_or_not = ifelse(is.na(INACTV_DATE),0,1) )
 
-#¬O§_¬°¸Ó«È¤á³Ì«á¤@µ§ (·s¼W¤@Äæ¦ì)
+#æ˜¯å¦ç‚ºè©²å®¢æˆ¶æœ€å¾Œä¸€ç­† (æ–°å¢ä¸€æ¬„ä½)
 All_merge3<-All_merge3 %>% 
   mutate(lead_one = lead(Subscriber_No),
          last_one = ifelse(Subscriber_No== lead_one,0,1))
@@ -112,7 +112,7 @@ All_merge5_sub_Store_Name_M <- All_merge5_sub %>%
   group_by(Store_Name,Store_No) %>% 
   summarise(count_M = n_distinct(MINING_DW_SUBSCR_NO))
 
-# All_merge5_sub_Store_Name_??†æ?_1 <- All_merge5_sub_Store_Name_??†æ?? %>% 
+# All_merge5_sub_Store_Name_??ï‰?ï˜³1 <- All_merge5_sub_Store_Name_??ï‰?? %>% 
 #   group_by(Store_Name) %>% 
 #   summarise(count_M = n())
 
