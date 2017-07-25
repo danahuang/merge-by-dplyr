@@ -2,15 +2,15 @@
 # getwd()
 # gogoro<-read.table("NPAC_gogoro.txt", header=TRUE, sep="\t")
 #----------------------------------
-# ²MÅÜ¼Æ¸ê®Æ,«ü©w¸ê®Æ§¨¦ì¸m
+# æ¸…è®Šæ•¸è³‡æ–™,æŒ‡å®šè³‡æ–™å¤¾ä½ç½®
 #----------------------------------
 rm(list=ls())
-dir<-setwd("D:/Dana/4. Analysis/10. ¶i©±¬d¦X¬ù part 2/data")
+dir<-setwd("D:/Dana/4. Analysis/10. é€²åº—æŸ¥åˆç´„ part 2/data")
 
-# detach(package:plyr) # ¨ø¸ü®M¥ó
+# detach(package:plyr) # å¸è¼‰å¥—ä»¶
 # remove.packages("plyr")
 
-# install.packages("dplyr")   ¦w¸Ë«á«K¤£¶·°õ¦æ
+# install.packages("dplyr")   å®‰è£å¾Œä¾¿ä¸é ˆåŸ·è¡Œ
 # install.packages("reshape2")
 # library(plyr)
 
@@ -18,10 +18,10 @@ library(dplyr)
 library(reshape2)
 
 #----------------------------------
-# ¶×¤J¸ê®Æ
+# åŒ¯å…¥è³‡æ–™
 #----------------------------------
 
-#¶×¤J¨C¤ë¶i©±¸ê®Æ
+#åŒ¯å…¥æ¯æœˆé€²åº—è³‡æ–™
 
 dir_files<-dir(path = dir)
 All=data.frame()
@@ -41,41 +41,41 @@ for( i in (1:length(dir_files))){
 # D4<-read.csv("201705.csv")
 # D5<-read.csv("201706.csv")
 # 
-# #­«·s©R¦WÄæ¦ì
+# #é‡æ–°å‘½åæ¬„ä½
 # colnames(D1) <- c("Subscriber_No","MINING_DW_SUBSCR_NO","Date","Time","Store_No","Store_Name","Store_Area","Staff_No")
 # colnames(D2) <- c("Subscriber_No","MINING_DW_SUBSCR_NO","Date","Time","Store_No","Store_Name","Store_Area","Staff_No")
 # colnames(D3) <- c("Subscriber_No","MINING_DW_SUBSCR_NO","Date","Time","Store_No","Store_Name","Store_Area","Staff_No")
 # colnames(D4) <- c("Subscriber_No","MINING_DW_SUBSCR_NO","Date","Time","Store_No","Store_Name","Store_Area","Staff_No")
 # colnames(D5) <- c("Subscriber_No","MINING_DW_SUBSCR_NO","Date","Time","Store_No","Store_Name","Store_Area","Staff_No")
 #  
-# #¾ã¨Ö
+# #æ•´ä½µ
 # All<-rbind(D1,D2,D3,D4,D5)
 
 #----------------------------------
-# ·s¼WÄæ¦ì
+# æ–°å¢æ¬„ä½
 #----------------------------------
 
-#°µF©MRÄæ¦ì
+#åšFå’ŒRæ¬„ä½
 category <- function(x) if(nchar(x) == 7) "F" else if (nchar(x) == 4) "R" else "Error"
 All$group <- sapply(All$Store_No,category)
 
-#«ö«È¤áID¤Î¶i©±®É¶¡±Æ¦C??
+#æŒ‰å®¢æˆ¶IDåŠé€²åº—æ™‚é–“æ’åˆ—??
 All_sorted <- arrange(All, Subscriber_No, Date, Time)
 
 # attach(All) 
 # All_sorted <- All[order(Subscriber_No, Date, Time),] 
 # detach(All) 
 
-# ­pºâ«È¤á¶i©±¦¸¼Æ
+# è¨ˆç®—å®¢æˆ¶é€²åº—æ¬¡æ•¸
 library(dplyr)
 count <- All_sorted  %>% group_by(Subscriber_No) %>% summarise(count = n())
 All_merge <-merge(All_sorted,count, by = c("Subscriber_No"), all.x = TRUE, all.y = FALSE)
 
-# ¬O§_¦³¶iF©ÎR (·s¼W¤GÄæ¦ì))
+# æ˜¯å¦æœ‰é€²Fæˆ–R (æ–°å¢äºŒæ¬„ä½))
 FR <-dcast(All_merge,formula=Subscriber_No~group, value.var="count")
 All_merge2 <-merge(All_merge,FR, by = c("Subscriber_No"), all.x = TRUE, all.y = FALSE)
 
-# ¬O§_¦³¶iF¥BR (·s¼W¤@Äæ¦ì)
+# æ˜¯å¦æœ‰é€²Fä¸”R (æ–°å¢ä¸€æ¬„ä½)
 All_merge2 <-
   All_merge2 %>% 
   mutate(F_and_R = All_merge2$F*All_merge2$R )
@@ -83,10 +83,10 @@ All_merge2 <-
 # group_by(All, Subscriber_No) %>% do(data.frame(count = count(.$Subscriber_No)))  
 # All_sorted_shrink <-subset(All_merge2, count>1)
 
-#¶×¤JNP churn¤é´Á©M¦X¬ù¨ì´Á¤ë¼Æ?„åˆ°??Ÿæ?ˆæ•¸
+#åŒ¯å…¥NP churnæ—¥æœŸå’Œåˆç´„åˆ°æœŸæœˆæ•¸?ï„’ï‘??î¸‚?ï‡î²
 # install.packages("RODBC")
 library("RODBC")
-ch <- odbcConnect(dsn="10.68.64.138",uid="u_danahuang1",pwd="DJana8501421")
+ch <- odbcConnect(dsn="10.68.64.138",uid="u_daXXX",pwd="DJana8XXX")
 NP_churn<-sqlQuery(ch, paste("select mining_dw_subscr_no, inactv_date, PROM_CURR_EXP_MONTH_CNT, data_month
 from mds_mart.mds_active_mly
 where churn_ind='Y' and churn_type='MNP' and
@@ -106,21 +106,21 @@ All_merge3 <-merge(All_merge2,NP_churn, by = c("MINING_DW_SUBSCR_NO"), all.x = T
 # library(dplyr)
 # library(reshape2)
 
-#©M¤U¤@µ§ªº¤Ñ¼Æ®t (·s¼W¤@Äæ¦ì)
+#å’Œä¸‹ä¸€ç­†çš„å¤©æ•¸å·® (æ–°å¢ä¸€æ¬„ä½)
 All_merge3<-All_merge3 %>% 
   tbl_df() %>% 
   mutate(lead_date = lead(Date),
          diff_day = as.Date(lead_date) - as.Date(Date))
 
-#¸Óµ§¶i©±¤é©Mchurn¤é´Áªº¤Ñ¼Æ®t (·s¼W¤@Äæ¦ì)
+#è©²ç­†é€²åº—æ—¥å’Œchurnæ—¥æœŸçš„å¤©æ•¸å·® (æ–°å¢ä¸€æ¬„ä½)
 All_merge3$churn_diff_day<-as.Date(All_merge3$INACTV_DATE) - as.Date(All_merge3$Date)
 
-#¬O§_¦³churn (·s¼W¤@Äæ¦ì)
+#æ˜¯å¦æœ‰churn (æ–°å¢ä¸€æ¬„ä½)
 All_merge3 <-
   All_merge3 %>% 
   mutate(churn_or_not = ifelse(is.na(INACTV_DATE),0,1) )
 
-#¬O§_¬°¸Ó«È¤á³Ì«á¤@µ§ (·s¼W¤@Äæ¦ì)
+#æ˜¯å¦ç‚ºè©²å®¢æˆ¶æœ€å¾Œä¸€ç­† (æ–°å¢ä¸€æ¬„ä½)
 All_merge3<-All_merge3 %>% 
   mutate(lead_one = lead(Subscriber_No),
          last_one = ifelse(Subscriber_No== lead_one,0,1))
@@ -130,7 +130,7 @@ All_merge3<-All_merge3 %>%
 
 # if(All_merge3$Subscriber_No==All_merge3$MiningNext) {
 # All_merge3$DateDiff<- difftime(All_merge3$DateNext , All_merge3$Date , units="days")
-#   # }  #???¥i¥H¬O¡§secs¡¨, ¡§mins¡¨, ¡§hours¡¨, ¡§days¡¨
+#   # }  #???å¯ä»¥æ˜¯â€œsecsâ€, â€œminsâ€, â€œhoursâ€, â€œdaysâ€
 # All_merge3$DateDiff<- round(All_merge3$DateDiff)
 # 
 # All_merge3$ChurnDateDiff<- difftime(All_merge3$INACTV_DATE , All_merge3$Date , units="days")
@@ -139,7 +139,7 @@ All_merge3<-All_merge3 %>%
 
 # today <- Sys.Date()
 # gtd <- as.Date("2011-07-01")   
-# difftime(today, gtd, units="weeks")  #???¥i¥H¬O¡§secs¡¨, ¡§mins¡¨, ¡§hours¡¨, ¡§days¡¨
+# difftime(today, gtd, units="weeks")  #???å¯ä»¥æ˜¯â€œsecsâ€, â€œminsâ€, â€œhoursâ€, â€œdaysâ€
 
 
 # data.frame(date = c(as.Date('2017-07-01'),
@@ -149,7 +149,7 @@ All_merge3<-All_merge3 %>%
 #   mutate(lead_date = lead(date),
 #          diff_day = lead_date - date)
 
-# °µ¶i©±¶¶§ÇÄæ¦ì (·s¼W¤@Äæ¦ì)
+# åšé€²åº—é †åºæ¬„ä½ (æ–°å¢ä¸€æ¬„ä½)
   All_agg <- All_merge3 %>% 
   group_by(MINING_DW_SUBSCR_NO) %>% 
   summarise(paste(group, diff_day, collapse = ''))
@@ -179,7 +179,7 @@ All_merge3<-All_merge3 %>%
       
       
   # All_flow <- sapply(All_merge3,flow)
-  # °µ¶i©±«á¬y¥¢«e¤Ñ¼ÆÄæ¦ì (·s¼W¤@Äæ¦ì)
+  # åšé€²åº—å¾Œæµå¤±å‰å¤©æ•¸æ¬„ä½ (æ–°å¢ä¸€æ¬„ä½)
   All_churnagg <- All_merge3 %>% 
     group_by(MINING_DW_SUBSCR_NO) %>% 
     summarise( paste(churn_diff_day, "C",collapse = ''))
@@ -196,7 +196,7 @@ All_merge4 <-merge(All_merge4,All_churnagg, by = c("MINING_DW_SUBSCR_NO"), all.x
 #   group_by(ID) %>% 
 #   summarise(Store_F = paste(Store, collapse = ''))
 
-#¦³¬ùµL¬ùÄæ¦ì(churnªº«È¤á¤~¦³¦¹¸ê°T)
+#æœ‰ç´„ç„¡ç´„æ¬„ä½(churnçš„å®¢æˆ¶æ‰æœ‰æ­¤è³‡è¨Š)
 All_merge4$PROM_CURR_EXP_MONTH_CNT<- as.numeric(All_merge4$PROM_CURR_EXP_MONTH_CNT)
 
 All_merge4<-All_merge4 %>% 
@@ -206,7 +206,7 @@ mutate( contract_or_not = ifelse(PROM_CURR_EXP_MONTH_CNT>0,1,0) )
 # write.csv(All_sorted_shrink,"All_store_Data_shrink2.csv")
 # edit(All_sorted) 
 #----------------------------------
-# ¦A°µ§PÂ_¶iFªº«È¤á¬O§_¤T¤Ñ¤º¤]¶iRªºdataframe
+# å†åšåˆ¤æ–·é€²Fçš„å®¢æˆ¶æ˜¯å¦ä¸‰å¤©å…§ä¹Ÿé€²Rçš„dataframe
 #----------------------------------
 All_merge4<-read.csv("All_store_Data4.csv")
 All_merge4_sub = subset(All_merge4, select = c(Subscriber_No, MINING_DW_SUBSCR_NO,Date,group,Store_No,Store_Name,count))
@@ -244,10 +244,10 @@ All_merge5$Bad_Store = as.numeric(All_merge5$Bad_Store )
 
 write.csv(All_merge5,"All_store_Data5.csv")
 
-# §âÀÉ®×¦AÅª¶i¨Ó
+# æŠŠæª”æ¡ˆå†è®€é€²ä¾†
 All_merge5<-read.csv("All_store_Data5.csv")
 
-#Q1 ¦³NP churnªÌ¡A³Ì«á¤@¦¸¶i©±¨ìchurnªº¤Ñ¼Æ®t (¨C­Óchurn«È¤áªº¤Ñ¼Æ))
+#Q1 æœ‰NP churnè€…ï¼Œæœ€å¾Œä¸€æ¬¡é€²åº—åˆ°churnçš„å¤©æ•¸å·® (æ¯å€‹churnå®¢æˆ¶çš„å¤©æ•¸))
 subset_Q1<- subset(All_merge5, churn_or_not==1)
 # subset_Q1<- subset(subset_Q1, Bad_Store==1)
 subset_Q1<- subset(subset_Q1, last_one==1)
@@ -260,7 +260,7 @@ subset_Q1 <- subset_Q1 %>%
 
 write.csv(subset_Q1,"subset_Q1.csv")
 
-#Q2_1 ¦³NP churnªÌ¡A¥u¶i¹LF¥Bchurn®ÉµL¬ùªº«È¤á (¨C®aFªºchurn«È¤á¼Æ)?•¸)
+#Q2_1 æœ‰NP churnè€…ï¼Œåªé€²éFä¸”churnæ™‚ç„¡ç´„çš„å®¢æˆ¶ (æ¯å®¶Fçš„churnå®¢æˆ¶æ•¸)?î²)
 subset_Q2_1<- subset(All_merge5, churn_or_not==1)
 subset_Q2_1<- subset(subset_Q2_1, contract_or_not==0)
 subset_Q2_1<- subset(subset_Q2_1,F>0)
@@ -269,18 +269,18 @@ subset_Q2_1<- subset(subset_Q2_1,churn_diff_day>0)
 subset_Q2_1<- subset(subset_Q2_1,churn_diff_day<=7)
 subset_Q2_1<- subset(subset_Q2_1, count<=30)
 
-# Q2_1¤À¤l
+# Q2_1åˆ†å­
 subset_Q2_1_groupby <- subset_Q2_1 %>% 
   group_by(Store_No,Store_Name,MINING_DW_SUBSCR_NO) %>% 
   summarise( count = n())
 
 subset_Q2_1_groupbygroupby <- subset_Q2_1_groupby %>% 
   group_by(Store_No,Store_Name) %>% 
-  summarise( ¤À¤l_count = n())
+  summarise( åˆ†å­_count = n())
 
 write.csv(subset_Q2_1_groupbygroupby,"subset_Q2_1.csv")
 
-#Q2_2 ¦³NP churnªÌ¡A¦³¶i¹LF©MR¥Bchurn®ÉÁÙ¦³¬ùªº«È¤á (¨C®aFªºchurn«È¤á¼Æ)?•¸)
+#Q2_2 æœ‰NP churnè€…ï¼Œæœ‰é€²éFå’ŒRä¸”churnæ™‚é‚„æœ‰ç´„çš„å®¢æˆ¶ (æ¯å®¶Fçš„churnå®¢æˆ¶æ•¸)?î²)
 subset_Q2_2<- subset(All_merge5, churn_or_not==1)
 subset_Q2_2<- subset(subset_Q2_2, contract_or_not==1)
 subset_Q2_2<- subset(subset_Q2_2,F_and_R>0)
@@ -288,31 +288,31 @@ subset_Q2_2<- subset(subset_Q2_2,churn_diff_day>0)
 subset_Q2_2<- subset(subset_Q2_2,churn_diff_day<=7)
 subset_Q2_2<- subset(subset_Q2_2,Bad_Store==1)
 subset_Q2_2<- subset(subset_Q2_2, count<=30)
-# Q2_2¤À¤l
+# Q2_2åˆ†å­
 subset_Q2_2_groupby <- subset_Q2_2 %>% 
   group_by(Store_No,Store_Name,MINING_DW_SUBSCR_NO) %>% 
   summarise( count = n())
 
 subset_Q2_2_groupbygroupby <- subset_Q2_2_groupby %>% 
   group_by(Store_No,Store_Name) %>% 
-  summarise( ¤À¤l_count = n())
+  summarise( åˆ†å­_count = n())
 
 write.csv(subset_Q2_2_groupbygroupby,"subset_Q2_2.csv")
 
-# ¤À¥À (¨C®aFªº¶i©±«È¤á¼Æ)
+# åˆ†æ¯ (æ¯å®¶Fçš„é€²åº—å®¢æˆ¶æ•¸)
 subset_Q2_groupby <- All_merge4 %>% 
   group_by(Store_No,Store_Name,MINING_DW_SUBSCR_NO) %>% 
   summarise( count = n())
 
 subset_Q2_groupbygroupby <- subset_Q2_groupby %>% 
   group_by(Store_No,Store_Name) %>% 
-  summarise( ¤À¥À_count = n())
+  summarise( åˆ†æ¯_count = n())
 
 write.csv(subset_Q2_groupbygroupby,"subset_Q2.csv")
 
 
 
-# ¶i©±¤H¤À¸s (1.¤T¤Ñ¤º¶iF&R¥B¦³¬ù¡A2.¥u¶iFµL¬ù¡A3.¨ä¥L¶i©±«È¤á)ˆ¶)
+# é€²åº—äººåˆ†ç¾¤ (1.ä¸‰å¤©å…§é€²F&Rä¸”æœ‰ç´„ï¼Œ2.åªé€²Fç„¡ç´„ï¼Œ3.å…¶ä»–é€²åº—å®¢æˆ¶)ï—)
 
 
 
